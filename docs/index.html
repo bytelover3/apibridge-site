@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docs — APIBridge</title>
+<meta name="description" content="API reference and guides for APIBridge — the OpenAI-compatible LLM gateway.">
+<link rel="stylesheet" href="/apibridge/assets/css/style.css">
+<link rel="stylesheet" href="/apibridge/assets/css/docs.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231e3a5f'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='bold' text-anchor='middle' fill='%2300d4aa'%3EA%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a href="/apibridge/" class="brand">
+      <span class="brand-mark">A</span>
+      <span class="brand-text">APIBridge</span>
+      <span class="brand-tag">docs</span>
+    </a>
+    <nav class="topnav">
+      <a href="/apibridge/#quickstart">Quickstart</a>
+      <a href="/apibridge/#pricing">Pricing</a>
+      <a href="/apibridge/#status">Status</a>
+      <a href="/apibridge/docs/" class="active">Docs</a>
+      <a href="/apibridge/login/" class="btn btn-primary btn-sm">Get free API key</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+  <aside class="docs-sidebar">
+    <div class="docs-search">
+      <input type="text" placeholder="Search docs… (⌘K)" disabled>
+    </div>
+    <nav class="docs-nav">
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Getting started</div>
+        <ul>
+          <li><a href="#introduction" class="active">Introduction</a></li>
+          <li><a href="#quickstart">Quickstart</a></li>
+          <li><a href="#authentication">Authentication</a></li>
+          <li><a href="#libraries">Client libraries</a></li>
+        </ul>
+      </div>
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">API reference</div>
+        <ul>
+          <li><a href="#models">Models</a></li>
+          <li><a href="#chat-completions">Chat completions</a></li>
+          <li><a href="#streaming">Streaming</a></li>
+          <li><a href="#embeddings">Embeddings</a></li>
+          <li><a href="#function-calling">Function calling</a></li>
+        </ul>
+      </div>
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Operations</div>
+        <ul>
+          <li><a href="#rate-limits">Rate limits</a></li>
+          <li><a href="#errors">Errors</a></li>
+          <li><a href="#webhooks">Webhooks</a></li>
+          <li><a href="#data-policy">Data policy</a></li>
+        </ul>
+      </div>
+      <div class="docs-nav-section">
+        <div class="docs-nav-title">Reference</div>
+        <ul>
+          <li><a href="#changelog">Changelog</a></li>
+          <li><a href="#status-page">Status page</a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
+
+  <main class="docs-main">
+
+    <section id="introduction">
+      <div class="docs-eyebrow">Introduction</div>
+      <h1>APIBridge API</h1>
+      <p class="docs-lede">
+        APIBridge provides an OpenAI-compatible HTTP API to access Claude, GPT, Gemini, Mistral,
+        and self-hosted models through a single endpoint. This page is the developer reference
+        for integrating with our API.
+      </p>
+      <div class="callout callout-info">
+        <strong>Don't have a key yet?</strong> <a href="/apibridge/login/">Sign up free</a> — you'll get 10,000 tokens/day across all models.
+      </div>
+    </section>
+
+    <section id="quickstart">
+      <h2>Quickstart</h2>
+      <p>Send your first request in three lines:</p>
+<pre class="code-block"><code><span class="cm">$</span> export APIBRIDGE_KEY=ak_live_xxxxxxxxxxxx
+<span class="cm">$</span> curl https://api.apibridge.io/v1/chat/completions \
+    -H <span class="s">"Authorization: Bearer $APIBRIDGE_KEY"</span> \
+    -H <span class="s">"Content-Type: application/json"</span> \
+    -d '{<span class="s">"model"</span>:<span class="s">"claude-opus-4-7"</span>,<span class="s">"messages"</span>:[{<span class="s">"role"</span>:<span class="s">"user"</span>,<span class="s">"content"</span>:<span class="s">"Hello"</span>}]}'</code></pre>
+      <p>Sample response:</p>
+<pre class="code-block"><code>{
+  <span class="s">"id"</span>: <span class="s">"chatcmpl-AbCdEfGhIj1234567890"</span>,
+  <span class="s">"object"</span>: <span class="s">"chat.completion"</span>,
+  <span class="s">"created"</span>: 1779000000,
+  <span class="s">"model"</span>: <span class="s">"claude-opus-4-7"</span>,
+  <span class="s">"choices"</span>: [{
+    <span class="s">"index"</span>: 0,
+    <span class="s">"message"</span>: { <span class="s">"role"</span>: <span class="s">"assistant"</span>, <span class="s">"content"</span>: <span class="s">"Hello! How can I help you today?"</span> },
+    <span class="s">"finish_reason"</span>: <span class="s">"stop"</span>
+  }],
+  <span class="s">"usage"</span>: { <span class="s">"prompt_tokens"</span>: 8, <span class="s">"completion_tokens"</span>: 9, <span class="s">"total_tokens"</span>: 17 }
+}</code></pre>
+    </section>
+
+    <section id="authentication">
+      <h2>Authentication</h2>
+      <p>
+        All requests must include an <code>Authorization</code> header with your API key:
+      </p>
+<pre class="code-block"><code>Authorization: Bearer ak_live_xxxxxxxxxxxxxxxxxxxx</code></pre>
+
+      <h3>Key formats</h3>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Prefix</th><th>Meaning</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>ak_live_</code></td><td>Production key</td><td>Counts against your billed quota.</td></tr>
+          <tr><td><code>ak_test_</code></td><td>Sandbox key</td><td>Free, returns deterministic dummy responses for CI.</td></tr>
+          <tr><td><code>ak_user_</code></td><td>Personal dev key</td><td>Capped at the free tier (10K tokens/day).</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-warn">
+        Treat your key like a password. Never commit it to source control. We rotate compromised keys automatically when detected on public GitHub.
+      </div>
+    </section>
+
+    <section id="libraries">
+      <h2>Client libraries</h2>
+      <p>APIBridge is a drop-in replacement for OpenAI. Existing OpenAI SDKs work without modification — just point them at our base URL.</p>
+
+      <div class="lang-tabs">
+        <div class="lang-tab-label">Python</div>
+<pre class="code-block"><code><span class="k">from</span> openai <span class="k">import</span> OpenAI
+<span class="k">import</span> os
+
+client = OpenAI(
+    base_url=<span class="s">"https://api.apibridge.io/v1"</span>,
+    api_key=os.environ[<span class="s">"APIBRIDGE_KEY"</span>],
+)
+
+resp = client.chat.completions.create(
+    model=<span class="s">"claude-opus-4-7"</span>,
+    messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Hello"</span>}],
+)
+print(resp.choices[0].message.content)</code></pre>
+
+        <div class="lang-tab-label">Node.js</div>
+<pre class="code-block"><code><span class="k">import</span> OpenAI <span class="k">from</span> <span class="s">"openai"</span>;
+
+<span class="k">const</span> client = <span class="k">new</span> OpenAI({
+  baseURL: <span class="s">"https://api.apibridge.io/v1"</span>,
+  apiKey: process.env.APIBRIDGE_KEY,
+});
+
+<span class="k">const</span> resp = <span class="k">await</span> client.chat.completions.create({
+  model: <span class="s">"claude-opus-4-7"</span>,
+  messages: [{ role: <span class="s">"user"</span>, content: <span class="s">"Hello"</span> }],
+});
+console.log(resp.choices[0].message.content);</code></pre>
+
+        <div class="lang-tab-label">Go</div>
+<pre class="code-block"><code><span class="k">import</span> openai <span class="s">"github.com/sashabaranov/go-openai"</span>
+
+cfg := openai.DefaultConfig(os.Getenv(<span class="s">"APIBRIDGE_KEY"</span>))
+cfg.BaseURL = <span class="s">"https://api.apibridge.io/v1"</span>
+client := openai.NewClientWithConfig(cfg)
+
+resp, err := client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
+    Model: <span class="s">"claude-opus-4-7"</span>,
+    Messages: []openai.ChatCompletionMessage{{Role: <span class="s">"user"</span>, Content: <span class="s">"Hello"</span>}},
+})</code></pre>
+      </div>
+    </section>
+
+    <section id="models">
+      <h2>Models</h2>
+      <p>Model IDs map directly to upstream provider names. Pricing per 1M tokens (input / output):</p>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Model</th><th>Provider</th><th>Context</th><th>Price (in/out)</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>claude-opus-4-7</code></td><td>Anthropic</td><td>1M</td><td>$15 / $75</td><td><span class="badge-ok">stable</span></td></tr>
+          <tr><td><code>claude-sonnet-4-6</code></td><td>Anthropic</td><td>200K</td><td>$3 / $15</td><td><span class="badge-ok">stable</span></td></tr>
+          <tr><td><code>claude-haiku-4-5</code></td><td>Anthropic</td><td>200K</td><td>$0.80 / $4</td><td><span class="badge-ok">stable</span></td></tr>
+          <tr><td><code>gpt-5</code></td><td>OpenAI</td><td>400K</td><td>$5 / $30</td><td><span class="badge-ok">stable</span></td></tr>
+          <tr><td><code>gpt-5-mini</code></td><td>OpenAI</td><td>128K</td><td>$0.30 / $1.20</td><td><span class="badge-ok">stable</span></td></tr>
+          <tr><td><code>gemini-2.5-pro</code></td><td>Google</td><td>2M</td><td>$3.50 / $10.50</td><td><span class="badge-ok">stable</span></td></tr>
+          <tr><td><code>mistral-large-2</code></td><td>Mistral</td><td>128K</td><td>$2 / $6</td><td><span class="badge-ok">stable</span></td></tr>
+          <tr><td><code>llama-3.3-70b</code></td><td>Self-hosted</td><td>32K</td><td>$0.50 / $0.80</td><td><span class="badge-beta">beta</span></td></tr>
+        </tbody>
+      </table>
+      <p>List the live catalog programmatically:</p>
+<pre class="code-block"><code><span class="cm">$</span> curl https://api.apibridge.io/v1/models \
+    -H <span class="s">"Authorization: Bearer $APIBRIDGE_KEY"</span></code></pre>
+    </section>
+
+    <section id="chat-completions">
+      <h2>POST /v1/chat/completions</h2>
+      <p>Generate a model response for a conversation.</p>
+
+      <h3>Request body</h3>
+      <table class="docs-table">
+        <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>model</code></td><td>string</td><td>Required. Model ID, e.g. <code>claude-opus-4-7</code>.</td></tr>
+          <tr><td><code>messages</code></td><td>array</td><td>Required. Conversation history, each item has <code>role</code> and <code>content</code>.</td></tr>
+          <tr><td><code>max_tokens</code></td><td>int</td><td>Max tokens to generate. Defaults to model's max.</td></tr>
+          <tr><td><code>temperature</code></td><td>float</td><td>Sampling temperature 0–2. Default 1.0.</td></tr>
+          <tr><td><code>top_p</code></td><td>float</td><td>Nucleus sampling. Default 1.0.</td></tr>
+          <tr><td><code>stream</code></td><td>bool</td><td>If true, returns SSE stream. See Streaming.</td></tr>
+          <tr><td><code>tools</code></td><td>array</td><td>Function definitions. See Function calling.</td></tr>
+          <tr><td><code>response_format</code></td><td>object</td><td><code>{"type":"json_object"}</code> for JSON mode.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Response</h3>
+      <p>Returns a <code>chat.completion</code> object identical in shape to OpenAI's response.</p>
+    </section>
+
+    <section id="streaming">
+      <h2>Streaming</h2>
+      <p>Set <code>stream: true</code> to receive a Server-Sent Events stream of incremental tokens. Useful for chat UIs that want to render mid-generation.</p>
+<pre class="code-block"><code>stream = client.chat.completions.create(
+    model=<span class="s">"claude-opus-4-7"</span>,
+    messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Write a haiku"</span>}],
+    stream=<span class="k">True</span>,
+)
+<span class="k">for</span> chunk <span class="k">in</span> stream:
+    <span class="k">if</span> chunk.choices[0].delta.content:
+        print(chunk.choices[0].delta.content, end=<span class="s">""</span>)</code></pre>
+      <p>The stream terminates with a <code>data: [DONE]</code> sentinel and the connection closes.</p>
+    </section>
+
+    <section id="embeddings">
+      <h2>POST /v1/embeddings</h2>
+      <p>Generate vector embeddings for semantic search and RAG. Defaults to <code>text-embedding-3-large</code> via OpenAI; we also proxy Voyage and Cohere.</p>
+<pre class="code-block"><code>resp = client.embeddings.create(
+    model=<span class="s">"text-embedding-3-large"</span>,
+    input=[<span class="s">"hello world"</span>, <span class="s">"foo bar baz"</span>],
+)
+<span class="k">for</span> e <span class="k">in</span> resp.data:
+    print(<span class="k">len</span>(e.embedding))  <span class="cm"># 3072</span></code></pre>
+    </section>
+
+    <section id="function-calling">
+      <h2>Function calling</h2>
+      <p>Pass a <code>tools</code> array to let the model decide whether to invoke a function. The model returns a <code>tool_calls</code> array; you execute the function and feed the result back in the next turn.</p>
+<pre class="code-block"><code>tools = [{
+    <span class="s">"type"</span>: <span class="s">"function"</span>,
+    <span class="s">"function"</span>: {
+        <span class="s">"name"</span>: <span class="s">"get_weather"</span>,
+        <span class="s">"description"</span>: <span class="s">"Get the current weather for a location"</span>,
+        <span class="s">"parameters"</span>: {
+            <span class="s">"type"</span>: <span class="s">"object"</span>,
+            <span class="s">"properties"</span>: {<span class="s">"location"</span>: {<span class="s">"type"</span>: <span class="s">"string"</span>}},
+            <span class="s">"required"</span>: [<span class="s">"location"</span>],
+        },
+    },
+}]
+
+resp = client.chat.completions.create(
+    model=<span class="s">"claude-opus-4-7"</span>,
+    messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"What's the weather in Singapore?"</span>}],
+    tools=tools,
+)</code></pre>
+    </section>
+
+    <section id="rate-limits">
+      <h2>Rate limits</h2>
+      <p>Limits are enforced per API key, per model, on a rolling 60-second window:</p>
+      <table class="docs-table">
+        <thead><tr><th>Plan</th><th>RPM</th><th>TPM</th><th>Concurrent</th></tr></thead>
+        <tbody>
+          <tr><td>Free</td><td>20</td><td>50,000</td><td>5</td></tr>
+          <tr><td>Pro</td><td>500</td><td>2,000,000</td><td>50</td></tr>
+          <tr><td>Team</td><td>Custom</td><td>Custom</td><td>Custom</td></tr>
+        </tbody>
+      </table>
+      <p>Each response includes rate-limit headers:</p>
+<pre class="code-block"><code>x-ratelimit-limit-requests: 500
+x-ratelimit-remaining-requests: 487
+x-ratelimit-reset-requests: 12s
+x-ratelimit-limit-tokens: 2000000
+x-ratelimit-remaining-tokens: 1842919</code></pre>
+      <p>Exceeding the limit returns HTTP <code>429</code> with <code>Retry-After</code>.</p>
+    </section>
+
+    <section id="errors">
+      <h2>Errors</h2>
+      <p>Errors follow OpenAI's shape:</p>
+<pre class="code-block"><code>{
+  <span class="s">"error"</span>: {
+    <span class="s">"message"</span>: <span class="s">"Invalid API key provided"</span>,
+    <span class="s">"type"</span>: <span class="s">"invalid_request_error"</span>,
+    <span class="s">"code"</span>: <span class="s">"invalid_api_key"</span>
+  }
+}</code></pre>
+      <table class="docs-table">
+        <thead><tr><th>HTTP</th><th>Code</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>400</td><td><code>invalid_request_error</code></td><td>Malformed body, missing field, etc.</td></tr>
+          <tr><td>401</td><td><code>invalid_api_key</code></td><td>Key missing, malformed, or revoked.</td></tr>
+          <tr><td>402</td><td><code>quota_exceeded</code></td><td>Free tier daily cap hit. Upgrade or wait.</td></tr>
+          <tr><td>404</td><td><code>model_not_found</code></td><td>Unknown model ID. Check <code>/v1/models</code>.</td></tr>
+          <tr><td>429</td><td><code>rate_limit_exceeded</code></td><td>Slow down — see Retry-After.</td></tr>
+          <tr><td>500</td><td><code>upstream_error</code></td><td>Provider returned an error.</td></tr>
+          <tr><td>503</td><td><code>service_unavailable</code></td><td>Brief incident — see status page.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="webhooks">
+      <h2>Webhooks</h2>
+      <p>Configure a webhook URL in the dashboard to be notified of:</p>
+      <ul>
+        <li><code>quota.threshold</code> — your spend reached 50/80/95% of plan</li>
+        <li><code>key.compromised</code> — we detected your key on a public source</li>
+        <li><code>incident.opened</code> / <code>incident.resolved</code></li>
+      </ul>
+      <p>Payloads are signed with HMAC-SHA256; verify the <code>X-APIBridge-Signature</code> header against your webhook secret.</p>
+    </section>
+
+    <section id="data-policy">
+      <h2>Data policy</h2>
+      <ul>
+        <li>Requests are not used for training.</li>
+        <li>Logs retain the first 100 chars of prompt + completion for 30 days for debugging.</li>
+        <li>Set <code>X-APIBridge-No-Log: true</code> to opt out (Pro plan and up).</li>
+        <li>EU/SG data residency available on Team plan.</li>
+        <li>SOC2 Type II report available under NDA — email <a href="mailto:security@apibridge.io">security@apibridge.io</a>.</li>
+      </ul>
+    </section>
+
+    <section id="changelog">
+      <h2>Changelog</h2>
+      <ul class="changelog-list">
+        <li><span class="cl-date">2026-05-12</span><span class="cl-tag tag-feat">feat</span><span>Added Claude Opus 4.7 (1M ctx) and Sonnet 4.6</span></li>
+        <li><span class="cl-date">2026-05-08</span><span class="cl-tag tag-feat">feat</span><span>SeaTalk DM bot for support — find <code>@APIBridge</code></span></li>
+        <li><span class="cl-date">2026-05-03</span><span class="cl-tag tag-fix">fix</span><span>Fixed Gemini upstream timeout when streaming &gt;4K tokens</span></li>
+        <li><span class="cl-date">2026-04-27</span><span class="cl-tag tag-feat">feat</span><span>Per-key spend dashboards now live for paid plans</span></li>
+        <li><span class="cl-date">2026-04-19</span><span class="cl-tag tag-perf">perf</span><span>Reduced p99 latency 380ms → 110ms</span></li>
+      </ul>
+    </section>
+
+    <section id="status-page">
+      <h2>Status page</h2>
+      <p>Live system status at <a href="/apibridge/#status">apibridge.io/status</a>. We post incidents and post-mortems there within 24h.</p>
+    </section>
+
+    <div class="docs-footer">
+      <p>Last updated 2026-05-12. Spotted an error? Email <a href="mailto:docs@apibridge.io">docs@apibridge.io</a>.</p>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <span class="brand-mark">A</span>
+      <strong>APIBridge</strong>
+      <span class="muted">v2.4.1 · build c8f4a7d</span>
+    </div>
+    <div class="footer-meta muted">
+      © APIBridge Inc. 2026 · Singapore · <a href="#">Privacy</a> · <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/apibridge/assets/js/main.js"></script>
+<script src="/apibridge/assets/js/docs.js"></script>
+</body>
+</html>

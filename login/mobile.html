@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open on PC — APIBridge</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+  background: #f7f8fa;
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  color: #1a2332;
+  padding: 16px;
+}
+.card {
+  background: #fff;
+  border: 1px solid #e3e7ed;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(14, 28, 46, 0.08);
+  padding: 36px 28px;
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+}
+.brand {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-bottom: 24px;
+  font-weight: 600; font-size: 17px;
+}
+.brand-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  background: #1e3a5f; color: #00d4aa;
+  border-radius: 6px;
+  font-family: ui-monospace, monospace;
+  font-weight: 700; font-size: 18px;
+}
+.icon {
+  font-size: 48px; margin-bottom: 14px; line-height: 1;
+}
+h1 {
+  font-size: 19px; font-weight: 600;
+  margin-bottom: 4px;
+}
+h1 .zh { display: block; font-size: 17px; color: #5b6473; font-weight: 500; margin-top: 4px; }
+.sub {
+  font-size: 13.5px; color: #5b6473;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  text-align: left;
+}
+.sub p { margin-bottom: 6px; }
+
+.steps-list {
+  text-align: left;
+  background: #f7f8fa;
+  border-radius: 6px;
+  padding: 16px 18px 14px;
+  margin-bottom: 18px;
+  list-style: none;
+  counter-reset: step;
+}
+.steps-list li {
+  position: relative;
+  padding: 6px 0 6px 32px;
+  font-size: 13.5px;
+  color: #1a2332;
+  line-height: 1.5;
+  counter-increment: step;
+}
+.steps-list li:before {
+  content: counter(step);
+  position: absolute; left: 0; top: 6px;
+  width: 22px; height: 22px;
+  background: #1e3a5f; color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  font-family: ui-monospace, monospace;
+}
+.steps-list .en { font-size: 13px; }
+.steps-list .zh { font-size: 12px; color: #5b6473; display: block; margin-top: 2px; }
+
+.url-box {
+  display: flex; align-items: stretch;
+  border: 1px solid #c8cfd9;
+  border-radius: 6px;
+  background: #f7f8fa;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.url-box input {
+  flex: 1; min-width: 0;
+  padding: 11px 12px;
+  background: transparent; border: none; outline: none;
+  font-family: ui-monospace, monospace;
+  font-size: 12px; color: #1a2332;
+  text-overflow: ellipsis;
+}
+.url-box button {
+  padding: 0 16px;
+  background: #1e3a5f; color: #fff; border: none;
+  cursor: pointer; font-size: 13px; font-weight: 500;
+  white-space: nowrap;
+}
+.url-box button:hover { background: #2a4d7a; }
+.url-box button.copied { background: #14ae5c; }
+.divider {
+  display: flex; align-items: center;
+  margin: 16px 0 12px;
+  color: #8893a3; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.divider:before, .divider:after {
+  content: ''; flex: 1; border-bottom: 1px solid #e3e7ed;
+}
+.divider:before { margin-right: 12px; }
+.divider:after { margin-left: 12px; }
+.email-link {
+  display: inline-block;
+  font-size: 13px; color: #1e3a5f;
+  text-decoration: none; padding: 6px 0;
+}
+.email-link:hover { text-decoration: underline; }
+.help {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #e3e7ed;
+  font-size: 12px; color: #8893a3;
+  line-height: 1.55;
+  text-align: left;
+}
+.help strong { color: #1a2332; }
+.help a, .help code { color: #1e3a5f; }
+.help code {
+  background: #f0f3f7;
+  padding: 1px 5px; border-radius: 3px;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <span class="brand-mark">A</span>
+    <span>APIBridge</span>
+  </div>
+  <div class="icon">💻</div>
+  <h1>
+    Please open on PC
+    <span class="zh">请在电脑上打开</span>
+  </h1>
+  <div class="sub">
+    <p>API key issuance requires a desktop browser on Windows / macOS / Linux. Mobile clients can't securely store keys or run the SDK.</p>
+    <p style="color:#8893a3; font-size:12.5px; margin-top:4px;">领取 API key 必须在 PC 浏览器（Windows / macOS / Linux）上完成，移动端无法安全保存 key。</p>
+  </div>
+
+  <ol class="steps-list">
+    <li>
+      <span class="en">Copy the link below to your PC</span>
+      <span class="zh">把下方链接复制到电脑上</span>
+    </li>
+    <li>
+      <span class="en">Open it in Chrome / Edge / Safari / Firefox</span>
+      <span class="zh">在 Chrome / Edge / Safari / Firefox 中打开</span>
+    </li>
+    <li>
+      <span class="en">Your API key will be issued automatically</span>
+      <span class="zh">系统自动签发 API key</span>
+    </li>
+  </ol>
+
+  <div class="url-box">
+    <input type="text" id="page-url" readonly>
+    <button id="copy-btn" type="button">Copy</button>
+  </div>
+  <div class="divider">or / 或</div>
+  <a class="email-link" id="email-link" href="#">📧 Email this link to myself · 邮件发给自己</a>
+
+  <div class="help">
+    <strong>Why PC only?</strong> 你的 API key 只显示一次并复制到剪贴板。我们要求在 PC 浏览器打开，方便你立刻粘贴到终端或 <code>.env</code> 文件。<br><br>
+    <strong>Why?</strong> Your key is shown once and copied to clipboard. We require PC so you can paste it directly into your terminal or env file.
+  </div>
+</div>
+<script>
+(function () {
+  var url = window.location.origin + window.location.pathname;
+  var input = document.getElementById('page-url');
+  input.value = url;
+  var btn = document.getElementById('copy-btn');
+  btn.addEventListener('click', async function () {
+    try { await navigator.clipboard.writeText(url); }
+    catch (e) {
+      input.select();
+      try { document.execCommand('copy'); } catch (_) {}
+    }
+    btn.classList.add('copied');
+    btn.textContent = '✓ Copied';
+    setTimeout(function () {
+      btn.classList.remove('copied');
+      btn.textContent = 'Copy';
+    }, 2000);
+  });
+  var email = document.getElementById('email-link');
+  email.href = 'mailto:?subject=' + encodeURIComponent('My APIBridge API key (open on PC)') +
+    '&body=' + encodeURIComponent('Open this link on your PC to claim your APIBridge API key:\n\n' + url + '\n\n— APIBridge');
+})();
+</script>
+</body>
+</html>
